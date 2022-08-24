@@ -1,10 +1,10 @@
 package com.epam.esm.config;
 
-import com.epam.esm.DTO.response.BaseExceptionDto;
+import com.epam.esm.dto.response.BaseExceptionDto;
+import com.epam.esm.exception.InvalidCertificateException;
 import com.epam.esm.exception.NoDataFoundException;
+import com.epam.esm.exception.TagAlreadyExistException;
 import com.epam.esm.exception.UnknownDataBaseException;
-import com.epam.esm.exception.gift_certificate.InvalidCertificateException;
-import com.epam.esm.exception.tag.TagAlreadyExistException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,8 +15,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> classNotFoundExceptionHandler(Exception e){
-        return ResponseEntity.ok(
-                new BaseExceptionDto(500, e.getLocalizedMessage(), 10500)
+        return ResponseEntity.badRequest().body(
+                new BaseExceptionDto(404, e.getLocalizedMessage(), 10500)
         );
     }
 
@@ -37,7 +37,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NoDataFoundException.class)
     public ResponseEntity<?> noDataFoundExceptionHandler(NoDataFoundException e){
         return ResponseEntity.status(400).body(
-                new BaseExceptionDto(204, e.getMessage(), 10204)
+                new BaseExceptionDto(400, e.getMessage(), 10204)
         );
     }
 

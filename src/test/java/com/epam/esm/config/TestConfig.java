@@ -1,7 +1,7 @@
 package com.epam.esm.config;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
+import com.epam.esm.dao.gift_certificate.GiftCertificateDAOImpl;
+import com.epam.esm.dao.tag.TagDAOImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,16 +10,15 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 @Configuration
-public class ApplicationConfig {
-
+public class TestConfig {
 
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(System.getenv("driver"));
-        dataSource.setUrl(System.getenv("url"));
-        dataSource.setUsername(System.getenv("username"));
-        dataSource.setPassword(System.getenv("password"));
+        dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("");
 
         return dataSource;
     }
@@ -30,9 +29,12 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ModelMapper modelMapper(){
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        return modelMapper;
+    public TagDAOImpl tagDAO(JdbcTemplate jdbcTemplate){
+        return new TagDAOImpl(jdbcTemplate);
+    }
+
+    @Bean
+    public GiftCertificateDAOImpl giftCertificateDAO(JdbcTemplate jdbcTemplate){
+        return new GiftCertificateDAOImpl(jdbcTemplate);
     }
 }
